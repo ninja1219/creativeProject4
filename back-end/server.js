@@ -18,7 +18,9 @@ app.post('/api/items', (req, res) => {
     id = id + 1;
     let item = {
         id: id,
-        text: req.body.text,
+        title: req.body.title,
+        description: req.body.description,
+        answer: req.body.answer,
         completed: req.body.completed
     };
     items.push(item);
@@ -41,7 +43,9 @@ app.put('/api/items/:id', (req, res) => {
         return;
     }
     let item = items[index];
-    item.text = req.body.text;
+    item.answer = req.body.answer;
+    item.title = req.body.title;
+    item.description = req.body.description;
     item.completed = req.body.completed;
     res.send(item);
 });

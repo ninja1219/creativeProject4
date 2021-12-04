@@ -1,28 +1,17 @@
 <template>
-<div>
-  <h1>A List of Things To Do</h1>
-  <p v-show="activeItems.length === 0">You are done with all your tasks! Good job!</p>
-  <form @submit.prevent="addItem">
-    <input type="text" v-model="text">
-    <button type="submit">Add</button>
-  </form>
-  <div class="controls">
-    <button @click="showAll()">Show All</button>
-    <button @click="showActive()">Show Active</button>
-    <button @click="showCompleted()">Show Completed</button>
-    <button @click="deleteCompleted()">Delete Completed</button>
+  <div>
+    <p v-show="allItems.length === 0">There are no new riddles added yet. Add some above.</p>
+
+    <h1>Add A Riddle</h1>
+    <form @submit.prevent="addItem">
+      <input type="text" v-model="title" placeholder="Title">
+      <p></p>
+      <input type="text" v-model="description" placeholder="Enter the riddle here">
+      <button type="submit">Add</button>
+      <p></p>
+      <input type="text" v-model="answer" placeholder="Answer">
+    </form>
   </div>
-  <ul>
-    <li v-for="item in filteredItems" :key="item.id">
-      <label :class="{ item: true, completed: item.completed }">
-        {{ item.text }}
-        <input type="checkbox" v-model="item.completed" @click="completeItem(item)" />
-        <span class="checkmark"></span>
-      </label>
-      <button @click="deleteItem(item)" class="delete">X</button>
-    </li>
-  </ul>
-</div>
 </template>
 
 <script>
@@ -32,7 +21,9 @@ export default {
   data() {
     return {
       items: [],
-      text: '',
+      title: '',
+      description: '',
+      answer: '',
       show: 'all',
     }
   },
@@ -40,20 +31,7 @@ export default {
     this.getItems();
   },
   computed: {
-    activeItems() {
-      return this.items.filter(item => {
-        return !item.completed;
-      });
-    },
-    filteredItems() {
-      if (this.show === 'active')
-        return this.items.filter(item => {
-          return !item.completed;
-        });
-      if (this.show === 'completed')
-        return this.items.filter(item => {
-          return item.completed;
-        });
+    allItems() {
       return this.items;
     },
   },
@@ -69,10 +47,14 @@ export default {
     async addItem() {
       try {
         await axios.post("/api/items", {
-          text: this.text,
+          answer: this.answer,
+          title: this.title,
+          description: this.description,
           completed: false
         });
-        this.text = "";
+        this.answer = "";
+        this.title = "";
+        this.description = "";
         this.getItems();
       } catch (error) {
         console.log(error);
@@ -81,7 +63,9 @@ export default {
     async completeItem(item) {
       try {
         axios.put("/api/items/" + item.id, {
-          text: item.text,
+          answer: item.answer,
+          title: item.title,
+          description: item.description,
           completed: !item.completed,
         });
         this.getItems();
@@ -133,6 +117,19 @@ li {
   align-items: center;
 }
 
+form button {
+  margin-left: 40px;
+  font-size: 20px;
+}
+
+.list h3 {
+  font-size: 20px;
+}
+
+.list p {
+  font-size: 15px;
+}
+
 .delete {
   display: none;
   margin-left: auto;
@@ -144,10 +141,6 @@ li:hover .delete {
 
 label {
   width: 400px;
-}
-
-.completed {
-  text-decoration: line-through;
 }
 
 /* Form */
