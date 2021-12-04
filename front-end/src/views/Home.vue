@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p v-show="allItems.length === 0">There are no new riddles added yet. Add some above.</p>
+    <p v-show="allItems.length === 0">There are no new riddles added yet. Add some below.</p>
 
     <h1>Add A Riddle</h1>
     <form @submit.prevent="addItem">
